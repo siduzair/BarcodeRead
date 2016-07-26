@@ -1,0 +1,199 @@
+
+   <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0"/>
+  <title>DawlanceMIS - QRCode App</title>
+  <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+  <!-- CSS  -->
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link href="css/materialize.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+  <link href="css/style.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+</head>
+<body>
+  <nav class="light-blue lighten-1" role="navigation">
+    <div class="nav-wrapper container"><a id="logo-container" href="#" class="brand-logo">QR App</a>
+      <!-- <ul class="right hide-on-med-and-down">
+        <li><a href="#">Navbar Link</a></li>
+      </ul>
+
+      <ul id="nav-mobile" class="side-nav">
+        <li><a href="#">Navbar Link</a></li>
+      </ul>
+      <a href="#" data-activates="nav-mobile" class="button-collapse"><i class="material-icons">menu</i></a> -->
+    </div>
+  </nav>
+  <div class="section no-pad-bot mainpage" id="index-banner">
+    <div class="container">
+      <br><br>
+      <h1 class="header center orange-text">QR App</h1>
+
+      <div id='upfront'>
+          <div class="row center">
+            <h5 class="header col s12 light">A robust app with intuitive UI for PO Management</h5>
+          </div>
+          <div class="row center">
+            <a onclick="scan()" id="download-button" class="btn-large waves-effect waves-light orange">Tap To Scan</a>
+          </div>
+      </div>
+       <div id='loader' class='center hide'>
+       <div class="preloader-wrapper big active">
+        <div class="spinner-layer spinner-blue-only">
+          <div class="circle-clipper left">
+            <div class="circle"></div>
+          </div><div class="gap-patch">
+            <div class="circle"></div>
+          </div><div class="circle-clipper right">
+            <div class="circle"></div>
+          </div>
+        </div>
+      </div>
+  </div>
+      <br><br>
+
+    </div>
+  </div>
+ 
+  <div class='table hide'>
+      <table class=" striped centered">
+      <thead>
+          <tr>
+              <th>Vendor Name</th>
+              <th>Item Name</th>
+              <th>Details</th>
+          </tr>
+        </thead>
+         <tbody>
+        </tbody>
+         
+      </table>
+  </div>
+
+
+  <div class="container">
+    
+
+    <div class="section">
+
+    </div>
+  </div>
+
+  <footer class="page-footer green">
+    <div class="container">
+    </div>
+    <div class="footer-copyright">
+      <div class="container">
+      In Collaboration with <a class="orange-text text-lighten-3" href="http://materializecss.com">Process Engineering and MIS</a>
+      </div>
+    </div>
+  </footer>
+
+
+  <!--  Scripts-->
+  
+  <script src="js/materialize.js"></script>
+  <script src="js/init.js"></script>
+
+  </body>
+</html>
+<!-- 
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+<script src="js/materialize.js"></script>
+  <script src="js/init.js"></script>
+ -->
+
+<script type="text/javascript">
+
+//    $('body').click(function () {
+//        alert("Yoyo!");
+////        scanSuccess(32);
+//    });
+    function scan(){
+        // cordova.plugins.barcodeScanner.scan(function(result){
+        //         //success callback
+        //         alert(JSON.stringify(result));
+        //         console.log("success");
+        //         scanSuccess(352);
+        //     },function(error){
+        //         //error callback
+        //         alert(JSON.stringify(error));
+        //         console.log("error");
+        //     });
+        // // Materialize.toast('Fetching data!', 4000);
+        document.getElementsByClassName("upfront").className = "upfront hide";
+        // $('.upfront').hide();
+        document.getElementsByClassName("loader").className = "loader";
+        // $('.loader').removeClass('hide');
+        scanSuccess(352);
+        // alert('day');
+
+    }
+
+    function scanSuccess(pocode) {
+        alert("In success");
+        var xmlHttp = new XMLHttpRequest();
+    xmlHttp.onreadystatechange = function() { 
+        var data  = "";
+        if (xmlHttp.readyState == 4 && xmlHttp.status == 200){
+            console.log(JSON.parse(xmlHttp.responseText)[0]);
+            var data = JSON.parse(xmlHttp.responseText);
+            $('.loader').hide();
+            $('.mainpage').hide();
+            $.each(data, function( index, value ) {
+               $('tbody').append('<tr><td>'+value.VENDOR_NAME+'</td><td>'+value.DESCRIPTION+'</td><td><a class="btn-floating red"><i class="material-icons">search</i></a></td></tr>');
+            });
+           alert(data);
+            // Materialize.toast('Data successfully Fetched!', 4000);
+            $('div.table').removeClass('hide');
+        }
+    }
+    xmlHttp.open("GET", "http://192.168.1.64:8080/index.php/webservice/experiment/"+pocode, true); // true for asynchronous 
+    xmlHttp.send(null);
+        // $.ajax({
+        //     type: "GET",
+        //     url: "http://192.168.1.64:8080/index.php/webservice/experiment/32",
+        //     dataType: "jsonp",
+        //     success: function(data) {
+        //         alert(data);
+//                $(function() {
+//                    var segmentPoCode=data[0].SEGMENT1;
+//                    document.getElementById("poCode").innerHTML = segmentPoCode;
+//                    $.each(response, function(i, item) {
+//                        var $tr = $('<tr>').append(
+//                                $('<td>').text(item.VENDOR_NAME),
+//                                $('<td>').text(item.CREATION_DATE),
+//                                $('<td>').text(item.DESCRIPTION),
+//                                $('<td>').text(item.PRIMARY_UOM_CODE),
+//                                $('<td>').text(item.QUANTITY),
+//                                $('<td>').text(item.QUANTITY_RECEIVED),
+//                                $('<td>').text(item.PLA.QUANTITY-PLLA.QUANTITY_RECEIVED),
+//                                $('<td>').text(item.DECODE(PLLA.PROMISED_DATE,NULL,PLLA.NEED_BY_DATE,PLLA.PROMISED_DATE)),
+//                                $('<td>').text(item.COMMENTS),
+//                                $('<td>').text(item.NOTE_TO_RECEIVER),
+//                                $('<td>').text(item.LINE_NUM),
+//                                $('<td>').text(item.LOCATION_CODE),
+//                                $('<td>').text(item.FULL_NAME),
+//                                $('<td>').text(item.UNIT_PRICE),
+//                                $('<td>').text(item.RATE)
+////                                $('<td>').text(item.(PLLA.QUANTITY*PLA.UNIT_PRICE*NVL(PHA.RATE,1)))
+//                        );
+//                        $.appendTo('#recordTable');
+//                        console.log($tr.wrap('<p>').html());
+//                    });
+//                });
+
+//                return data;
+//             },
+//             error: function(data) {
+//                 console.log(data);
+// //                alert('dsad');
+//             }
+//         });
+    }
+
+
+</script>
+</body>
+
+</html>

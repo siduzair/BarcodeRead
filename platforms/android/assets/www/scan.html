@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>BarCode Scanner - PhoneGapPro.com</title>
+    <script type="text/javascript" src="cordova.js"></script>
+    
+      <link rel="stylesheet" href="bootstrap-3.3.6-dist/bootstrap-3.3.6-dist/css/bootstrap.min.css">
+    <script src="js/jquery.min.js"></script>
+    <script src="bootstrap-3.3.6-dist/bootstrap-3.3.6-dist/js/bootstrap.min.js"></script>
+      <link href="css/materialize.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+  <link href="css/style.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+   <link href="font/material-design-icons/Material-Design-Icons.eot" type="text/css" rel="stylesheet"/>
+   <link href="font/material-design-icons/Material-Design-Icons.svg" type="text/css" rel="stylesheet"/>
+   <link href="font/material-design-icons/Material-Design-Icons.ttf" type="text/css" rel="stylesheet" />
+   <link href="font/material-design-icons/Material-Design-Icons.woff" type="text/css" rel="stylesheet"/>
+   <link href="font/material-design-icons/Material-Design-Icons.woff2" type="text/css" rel="stylesheet"/>
+
+    <script type="text/javascript">
+        function scan(){
+            console.log("clicked");
+            $('.upfront').hide();
+             $('.loader').removeClass('hide');
+              $('.mainpage').removeClass('hide');
+            cordova.plugins.barcodeScanner.scan(function(result){
+                //success callback
+                var jsonResult=JSON.stringify(result);
+               // Materialize.toast("scan successful "+jsonResult, 4000);
+                console.log("success");
+
+                scanSuccess(jsonResult);
+
+            },function(error){
+                //error callback
+                alert(JSON.stringify(error));
+                console.log("error");
+                alert("scan not successful "+error);
+            });
+         //   scanSuccess(352);
+        }
+function scanSuccess(pocode) {
+
+        obj = JSON.parse(pocode);
+        // Materialize.toast("In success with code "+pocode, 4000);
+        var pocodefinal=obj.text;
+        // Materialize.toast("successfully Scanned", 4000);
+        var url = "http://192.168.1.151:8080/index.php/webservice/experiment/"+pocodefinal;
+
+        var request = new XMLHttpRequest();  
+        request.open("GET", url, false);   
+        request.send(null);  
+         // alert(request.response);
+        if (request.status === 200) 
+        {  
+             Materialize.toast("Success", 2000);
+            $('div.has-error').removeClass('showError');
+        }else{
+
+         alert("New Company");
+        }
+        var data = JSON.parse(request.response);
+        $.each(data, function( index, value ) {
+               $('tbody').append('<tr><td>'+value.VENDOR_NAME+'</td><td>'+value.DESCRIPTION+'</td><td><a class="btn-floating red"><i class="material-icons">search</i></a></td></tr>');
+            });
+        $('.loader').hide();
+        $('.mainpage').hide();
+        $('div.table').removeClass('hide');
+
+    }
+    </script>
+
+        
+ 
+   <!-- <script> 
+   $('#action-button').click(function() {
+     console.log("ajax");
+   $.ajax({
+      url: 'http://localhost/ci/',
+      data: {
+         format: 'json'
+      },
+      error: function() {
+         $('#info').html('<p>An error has occurred</p>');
+      },
+      dataType: 'jsonp',
+      success: function(data) {
+         var $vendor_name = $('<h1>').text(data.vendor_name);
+         var $creation_date = $('<p>').text(data.creation_date);
+         $('#info')
+            .append($vendor_name)
+            .append($creation_date);
+      },
+      type: 'GET'
+   });
+});
+    </script> -->
+
+    <title>Scan PO</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+  <!-- <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"> -->
+</head>
+<body>
+<body>
+  <nav class="light-blue lighten-1" role="navigation">
+    <div class="nav-wrapper container"><a id="logo-container" href="#" class="brand-logo">QR App</a>
+      <!-- <ul class="right hide-on-med-and-down">
+        <li><a href="#">Navbar Link</a></li>
+      </ul>
+
+      <ul id="nav-mobile" class="side-nav">
+        <li><a href="#">Navbar Link</a></li>
+      </ul>
+      <a href="#" data-activates="nav-mobile" class="button-collapse"><i class="material-icons">menu</i></a> -->
+    </div>
+  </nav>
+  <div class="section no-pad-bot mainpage" id="index-banner">
+    <div class="container">
+      <br><br>
+      <h1 class="header center orange-text">QR App</h1>
+
+      <div class='upfront'>
+          <div class="row center">
+            <h5 class="header col s12 light">A robust app with intuitive UI for PO Management</h5>
+          </div>
+          <div class="row center">
+            <a onclick="scan()" id="download-button" class="btn-large waves-effect waves-light orange">Tap To Scan</a>
+          </div>
+      </div>
+       <div class='center loader hide'>
+       <div class="preloader-wrapper big active">
+        <div class="spinner-layer spinner-blue-only">
+          <div class="circle-clipper left">
+            <div class="circle"></div>
+          </div><div class="gap-patch">
+            <div class="circle"></div>
+          </div><div class="circle-clipper right">
+            <div class="circle"></div>
+          </div>
+        </div>
+      </div>
+  </div>
+      <br><br>
+
+    </div>
+  </div>
+ 
+  <div class='table hide'>
+      <table class=" striped centered">
+      <thead>
+          <tr>
+              <th>Vendor Name</th>
+              <th>Item Name</th>
+              <th>Details</th>
+          </tr>
+        </thead>
+         <tbody>
+        </tbody>
+         
+      </table>
+  </div>
+  <div class='has-error showError'>
+<p>
+  Cannot complete request: Unable to fetch from database. Check your connection and try again.
+</p>
+  </div>
+
+  <div class="container">
+    
+
+    <div class="section">
+
+    </div>
+  </div>
+
+  <footer class="page-footer green">
+    <div class="container">
+    </div>
+    <div class="footer-copyright">
+      <div class="container">
+      In Collaboration with <a class="orange-text text-lighten-3" href="http://materializecss.com">Process Engineering and MIS</a>
+      </div>
+    </div>
+  </footer>
+
+
+  <!--  Scripts-->
+  
+  <script src="js/materialize.js"></script>
+  <script src="js/init.js"></script>
+
+  </body>
+</body>
+</html>
